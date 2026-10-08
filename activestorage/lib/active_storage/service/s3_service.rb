@@ -98,7 +98,7 @@ module ActiveStorage
     def headers_for_direct_upload(key, content_type:, checksum:, filename: nil, disposition: nil, custom_metadata: {}, **)
       content_disposition = content_disposition_with(type: disposition, filename: filename) if filename
 
-      { "Content-Type" => content_type, **s3_http_headers_for_direct_upload(checksum), "Content-Disposition" => content_disposition, **custom_metadata_headers(custom_metadata) }
+      { "Content-Type" => content_type, **s3_http_headers_for_direct_upload(checksum), "Content-Disposition" => content_disposition }
     end
 
     def compose(source_keys, destination_key, filename: nil, content_type: nil, disposition: nil, custom_metadata: {})
@@ -223,10 +223,6 @@ module ActiveStorage
           yield object.get(range: "bytes=#{offset}-#{offset + chunk_size - 1}").body.string.force_encoding(Encoding::BINARY)
           offset += chunk_size
         end
-      end
-
-      def custom_metadata_headers(metadata)
-        metadata.transform_keys { |key| "x-amz-meta-#{key}" }
       end
   end
 end

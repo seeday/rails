@@ -39,7 +39,7 @@ if SERVICE_CONFIGURATIONS[:s3] && SERVICE_CONFIGURATIONS[:s3][:access_key_id].pr
         assert_equal "text/plain", details["content_type"]
         assert_match SERVICE_CONFIGURATIONS[:s3][:bucket], details["direct_upload"]["url"]
         assert_match(/s3(-[-a-z0-9]+)?\.(\S+)?amazonaws\.com/, details["direct_upload"]["url"])
-        assert_equal({ "Content-Type" => "text/plain", "Content-MD5" => checksum, "Content-Disposition" => "inline; filename=\"hello.txt\"; filename*=UTF-8''hello.txt", "x-amz-meta-my_key_3" => "my_value_3" }, details["direct_upload"]["headers"])
+        assert_equal({ "Content-Type" => "text/plain", "Content-MD5" => checksum, "Content-Disposition" => "inline; filename=\"hello.txt\"; filename*=UTF-8''hello.txt" }, details["direct_upload"]["headers"])
       end
     end
 
@@ -69,7 +69,7 @@ if SERVICE_CONFIGURATIONS[:s3] && SERVICE_CONFIGURATIONS[:s3][:access_key_id].pr
         assert_equal "text/plain", details["content_type"]
         assert_match SERVICE_CONFIGURATIONS[:s3][:bucket], details["direct_upload"]["url"]
         assert_match(/s3(-[-a-z0-9]+)?\.(\S+)?amazonaws\.com/, details["direct_upload"]["url"])
-        assert_equal({ "Content-Type" => "text/plain", "x-amz-checksum-sha256" => checksum, "Content-Disposition" => "inline; filename=\"hello.txt\"; filename*=UTF-8''hello.txt", "x-amz-meta-my_key_3" => "my_value_3" }, details["direct_upload"]["headers"])
+        assert_equal({ "Content-Type" => "text/plain", "x-amz-checksum-sha256" => checksum, "Content-Disposition" => "inline; filename=\"hello.txt\"; filename*=UTF-8''hello.txt" }, details["direct_upload"]["headers"])
       end
     end
   end

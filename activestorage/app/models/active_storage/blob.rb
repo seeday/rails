@@ -230,10 +230,11 @@ class ActiveStorage::Blob < ActiveStorage::Record
 
   # Sets custom metadata to be stored on the cloud storage provider.
   # Keys should not contain the cloud storage provider prefix as these get added automatically.
+  # For S3 direct uploads, custom metadata is included in the signed URL.
   #
   #   blob = ActiveStorage::Blob.new
   #   blob.custom_metadata = { optimized: true }
-  #   blob.service_headers_for_direct_upload["x-amz-meta-optimized"]
+  #   blob.custom_metadata[:optimized]
   #   => true
   def custom_metadata=(metadata)
     self[:metadata] = self[:metadata].merge(custom: metadata)

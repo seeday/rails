@@ -34,6 +34,29 @@ if SERVICE_CONFIGURATIONS[:s3]
       @service.delete key
     end
 
+    test "direct upload with custom metadata" do
+      key      = SecureRandom.base58(24)
+      data     = "Something else entirely!"
+      checksum = OpenSSL::Digest::MD5.base64digest(data)
+      metadata = { "user_id" => "123" }
+      url      = @service.url_for_direct_upload(key, expires_in: 5.minutes, content_type: "text/plain", content_length: data.size, checksum: checksum, custom_metadata: metadata)
+
+      uri = URI.parse url
+      request = Net::HTTP::Put.new uri.request_uri
+      request.body = data
+      @service.headers_for_direct_upload(key, checksum: checksum, content_type: "text/plain", filename: ActiveStorage::Filename.new("test.txt"), custom_metadata: metadata).each do |k, v|
+        request.add_field k, v
+      end
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+        http.request request
+      end
+
+      assert_equal data, @service.download(key)
+      assert_equal metadata, @service.bucket.object(key).metadata
+    ensure
+      @service.delete key
+    end
+
     test "direct upload with content disposition" do
       key      = SecureRandom.base58(24)
       data     = "Something else entirely!"
